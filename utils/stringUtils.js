@@ -5,13 +5,20 @@
 // n times with a space in the middle of each time.
 
 function repeatNTimesWithSpace(string, n){
-    return (string + ' ').repeat(n);
+    if(!string) return '';
+
+    const arr = new Array(n).fill(string);
+
+    return arr.join(' ');
 };
 
 
 // library  => Library
 
 function capitalizeFirstLetter(string){
+
+    if(!string) return '';
+
     return string[0].toUpperCase() + string.slice(1);
 };
 

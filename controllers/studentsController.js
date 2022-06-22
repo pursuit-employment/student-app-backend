@@ -4,7 +4,25 @@ const controller = express.Router();
 const studentData = require('../studentData.json');
 
 controller.get('/', (request, response) => {
-    response.json(studentData);
+
+    let {limit=25, min, max} = request.query; 
+
+    limit = Number(limit);
+
+    let studentDataForDelivery = {...studentData};
+
+    studentDataForDelivery.students = studentDataForDelivery.students.slice(0, limit);
+
+    response.json(studentDataForDelivery);
+
+
+    // //SELECT * FROM students
+    // if(!min && !max){
+    //     // SELECT * FROM students LIMIT $1, [limit]
+    // } else {
+    //     // SELECT * FROM students WHERE id >= $1 AND id <= $2 LIMIT $3, [min, max, limit]
+    // }
+
 });
 
 // write a route that accepts a student id as part of the path
