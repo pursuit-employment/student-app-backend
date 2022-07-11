@@ -3,15 +3,17 @@ const controller = express.Router();
 
 const studentData = require('../studentData.json');
 
-controller.get('/', (request, response) => {
+const db = require('../db/index');
+
+controller.get('/', async (request, response) => {
 
     let {limit=25, min, max} = request.query; 
 
     limit = Number(limit);
-
-    let studentDataForDelivery = {...studentData};
-
-    studentDataForDelivery.students = studentDataForDelivery.students.slice(0, limit);
+    
+    let studentDataForDelivery = await db.any('SELECT * FROM students');
+    
+    studentDataForDelivery = studentDataForDelivery.slice(0, limit);
 
     response.json(studentDataForDelivery);
 
@@ -30,7 +32,7 @@ controller.get('/', (request, response) => {
 // write a route that accepts a student id as part of the path
 // returning an object (JSON), representing the student with that id
 
-controller.get('/:id', (request, response) => {
+controller.get('/:id', async (request, response) => {
     try {
         const studentId = request.params.id;
         
@@ -39,9 +41,7 @@ controller.get('/:id', (request, response) => {
             return;
         }
         
-        const singleStudent = studentData.students.find(student =>{
-            return student.id === studentId;
-        });
+        const singleStudent = await db.oneOrNone('SELECT * FROM students WHERE id = $1', [studentId]);
         
         if(singleStudent){
             response.json(singleStudent);
