@@ -4,6 +4,7 @@ const controller = express.Router();
 const studentData = require('../studentData.json');
 
 const db = require('../db/index');
+const { response } = require('express');
 
 controller.get('/', async (request, response) => {
 
@@ -65,6 +66,21 @@ controller.get('/:id/grades', async (req, res) => {
 
         res.json(grades);
         
+    } catch (err){
+        res.status(500).send(err);
+    }
+});
+
+controller.delete('/:id', async (req, res) => {
+    try {
+        const studentId = req.params.id;
+
+        await db.none('DELETE FROM grades WHERE student_id = $1', [studentId]);
+
+        const deletedStudent = await db.one('DELETE FROM students WHERE id = $1 RETURNING *', [studentId]);
+
+        res.json(deletedStudent);
+
     } catch (err){
         res.status(500).send(err);
     }
