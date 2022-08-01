@@ -102,9 +102,9 @@ controller.put('/:id', async(req, res) => {
     try {
 
         const studentId = req.params.id;
-        const {firstname, lastname, company, city, skill, pic} = req.body;
+        const {firstname, lastname, email, company, city, skill, pic} = req.body;
 
-        const updatedUser = await db.one('UPDATE students SET firstname=$1, lastname=$2, company=$3, city=$4, skill=$5, pic=$6 WHERE id=$7 RETURNING *', [firstname, lastname, company, city, skill, pic, studentId]);
+        const updatedUser = await db.one('UPDATE students SET firstname=$1, lastname=$2, email=$3, company=$4, city=$5, skill=$6, pic=$7 WHERE id=$8 RETURNING *', [firstname, lastname, email, company, city, skill, pic, studentId]);
 
         res.json(updatedUser);
 
