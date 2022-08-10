@@ -1,6 +1,8 @@
 const express = require('express');
 const controller = express.Router();
 
+const {isValidEmail} = require('../utils/emailValidation');
+
 const studentData = require('../studentData.json');
 
 const db = require('../db/index');
@@ -85,6 +87,17 @@ controller.post('/', async(req, res) => {
             pic, 
             email} = req.body;
 
+        // is an provided? must be provided
+
+        if(!email){
+            return res.send("Email is required.");
+        }
+
+        // is the email valid? must be valid
+        if(!isValidEmail(email)){
+            return res.send("Please provide a valid email.")
+        }
+
         // save student to db
         const student = await db.one('INSERT INTO students (firstname, lastname, company, email, city, skill, pic) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *', 
             [firstname, lastname, company, email, city, skill, pic]
@@ -103,6 +116,15 @@ controller.put('/:id', async(req, res) => {
 
         const studentId = req.params.id;
         const {firstname, lastname, email, company, city, skill, pic} = req.body;
+
+        if(!email){
+            return res.send("Email is required.");
+        }
+
+        // is the email valid? must be valid
+        if(!isValidEmail(email)){
+            return res.send("Please provide a valid email.")
+        }
 
         const updatedUser = await db.one('UPDATE students SET firstname=$1, lastname=$2, email=$3, company=$4, city=$5, skill=$6, pic=$7 WHERE id=$8 RETURNING *', [firstname, lastname, email, company, city, skill, pic, studentId]);
 
